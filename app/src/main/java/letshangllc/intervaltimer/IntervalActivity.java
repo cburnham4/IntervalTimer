@@ -1,18 +1,21 @@
 package letshangllc.intervaltimer;
 
 import android.content.SharedPreferences;
-import android.media.AudioManager;
+import android.media.AudioAttributes;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.CountDownTimer;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.os.CountDownTimer;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import android.view.View;
 
 import java.util.Locale;
 import java.util.Timer;
@@ -40,11 +43,17 @@ public class IntervalActivity extends AppCompatActivity {
     private CountDownTimer countDownTimerInterval;
     private CountDownTimer countDownTimerRest;
 
+    private AdsHelper adsHelper;
+    private Timer adRefreshTimer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interval);
+
+        applyWindowInsets();
 
         currentInterval = 1;
 
@@ -56,42 +65,52 @@ public class IntervalActivity extends AppCompatActivity {
         this.startAds();
     }
 
-    private void findViews(){
-        tvMinute = (TextView) findViewById(R.id.tv_minute);
-        tvSecond = (TextView) findViewById(R.id.tv_second);
-        tvIntervalCount = (TextView) findViewById(R.id.tvIntervalCount);
-        tvIntervalRestLabel = (TextView) findViewById(R.id.tvIntervalRestLabel);
+    private void applyWindowInsets() {
+        final View content = findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(content, (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
     }
 
-    private void getData(){
+    private void findViews() {
+        tvMinute = findViewById(R.id.tv_minute);
+        tvSecond = findViewById(R.id.tv_second);
+        tvIntervalCount = findViewById(R.id.tvIntervalCount);
+        tvIntervalRestLabel = findViewById(R.id.tvIntervalRestLabel);
+    }
+
+    private void getData() {
         final SharedPreferences settings = getSharedPreferences(getString(R.string.prefs_name), 0);
-        intervalMinutes = settings.getInt(getString(R.string.prefs_minutes_interval),0);
-        intervalSeconds = settings.getInt(getString(R.string.prefs_seconds_interval),0);
+        intervalMinutes = settings.getInt(getString(R.string.prefs_minutes_interval), 0);
+        intervalSeconds = settings.getInt(getString(R.string.prefs_seconds_interval), 0);
 
-        intervalTime = (intervalMinutes*60+intervalSeconds)*1000;
+        intervalTime = (intervalMinutes * 60 + intervalSeconds) * 1000;
 
-        restMinutes = settings.getInt(getString(R.string.prefs_minutes_rest),0);
-        restSeconds = settings.getInt(getString(R.string.prefs_seconds_rest),0);
+        restMinutes = settings.getInt(getString(R.string.prefs_minutes_rest), 0);
+        restSeconds = settings.getInt(getString(R.string.prefs_seconds_rest), 0);
 
-        restTime = (restMinutes*60 + restSeconds) * 1000;
+        restTime = (restMinutes * 60 + restSeconds) * 1000;
 
-        totalIntervals = settings.getInt(getString(R.string.prefs_num_intervals),0);
+        totalIntervals = settings.getInt(getString(R.string.prefs_num_intervals), 0);
         setIntervalTimes();
     }
 
-    private void setIntervalTimes(){
+    private void setIntervalTimes() {
         tvMinute.setText(String.format(Locale.US, "%02d", intervalMinutes));
         tvSecond.setText(String.format(Locale.US, "%02d", intervalSeconds));
         tvIntervalRestLabel.setText("Interval: ");
         tvIntervalCount.setText(String.format(Locale.US, "%1d", currentInterval));
     }
-    private void setRestTimes(){
+
+    private void setRestTimes() {
         tvMinute.setText(String.format(Locale.US, "%02d", restMinutes));
         tvSecond.setText(String.format(Locale.US, "%02d", restSeconds));
     }
 
-    private void startTest(){
-        if(currentInterval > totalIntervals || totalIntervals ==0){
+    private void startTest() {
+        if (currentInterval > totalIntervals || totalIntervals == 0) {
             finish();
             return;
         }
@@ -99,11 +118,11 @@ public class IntervalActivity extends AppCompatActivity {
         startIntervalTimer();
     }
 
-    private void startIntervalTimer(){
+    private void startIntervalTimer() {
         countDownTimerInterval = new CountDownTimer(intervalTime, 100) {
 
             public void onTick(long millisUntilFinished) {
-                long minutes = (millisUntilFinished / 1000)  / 60;
+                long minutes = (millisUntilFinished / 1000) / 60;
                 long seconds = (millisUntilFinished / 1000) % 60;
 
                 tvMinute.setText(String.format(Locale.US, "%02d", minutes));
@@ -123,12 +142,12 @@ public class IntervalActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void startRestTimer(){
+    private void startRestTimer() {
         tvIntervalRestLabel.setText("Rest: ");
         countDownTimerRest = new CountDownTimer(restTime, 100) {
 
             public void onTick(long millisUntilFinished) {
-                long minutes = (millisUntilFinished / 1000)  / 60;
+                long minutes = (millisUntilFinished / 1000) / 60;
                 long seconds = (millisUntilFinished / 1000) % 60;
 
                 tvMinute.setText(String.format(Locale.US, "%02d", minutes));
@@ -144,16 +163,16 @@ public class IntervalActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void playAlarm(){
+    private void playAlarm() {
         /* Get the alarm tone */
         Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 
-        if(alert == null){
+        if (alert == null) {
             // alert is null, using backup
             alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-            // If notication is null the use ringtone
-            if(alert == null) {
+            // If notification is null then use ringtone
+            if (alert == null) {
                 // alert backup is null, using 2nd backup
                 alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
             }
@@ -162,21 +181,24 @@ public class IntervalActivity extends AppCompatActivity {
         try {
             /* Play the alarm */
             r = RingtoneManager.getRingtone(this, alert);
-            r.setStreamType(AudioManager.STREAM_ALARM);
+            r.setAudioAttributes(new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build());
             r.play();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1000);
-                    r.stop();
-                } catch (Exception e) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                if (r != null) {
                     r.stop();
                 }
-
+            } catch (Exception e) {
+                if (r != null) {
+                    r.stop();
+                }
             }
         }).start();
 
@@ -185,26 +207,49 @@ public class IntervalActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if(countDownTimerInterval != null){
+        if (countDownTimerInterval != null) {
             countDownTimerInterval.cancel();
         }
-        if(countDownTimerRest != null){
+        if (countDownTimerRest != null) {
             countDownTimerRest.cancel();
+        }
+        if (adsHelper != null) {
+            adsHelper.onPause();
         }
     }
 
-    private AdsHelper adsHelper;
-    private void startAds(){
-        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_id_interval), this);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adsHelper != null) {
+            adsHelper.onResume();
+        }
+    }
+
+    private void startAds() {
+        adsHelper = new AdsHelper(getWindow().getDecorView(),
+                getResources().getString(R.string.admob_id_interval), this);
 
         adsHelper.setUpAds();
-        int delay = 1000; // delay for 1 sec.
+        int delay = 1000;
         int period = getResources().getInteger(R.integer.ad_refresh_rate);
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        adRefreshTimer = new Timer();
+        adRefreshTimer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                adsHelper.refreshAd();  // display the data
+                adsHelper.refreshAd();
             }
         }, delay, period);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (adRefreshTimer != null) {
+            adRefreshTimer.cancel();
+            adRefreshTimer = null;
+        }
+        if (adsHelper != null) {
+            adsHelper.onDestroy();
+        }
+        super.onDestroy();
     }
 }

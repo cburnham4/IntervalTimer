@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Non-secret app strings. Historical strings.xml remains gitignored
+    (it previously held ad keys). Ad unit IDs live in ad_config.xml.
+-->
+<resources>
+    <string name="app_name">Interval Timer</string>
+
+    <string name="prefs_name">USER_PREFERENCES</string>
+    <string name="prefs_num_intervals">NumberIntervals</string>
+    <string name="prefs_minutes_interval">MinuteInterval</string>
+    <string name="prefs_seconds_interval">SecondsInterval</string>
+    <string name="prefs_minutes_rest">MinuteRest</string>
+    <string name="prefs_seconds_rest">SecondsRest</string>
+</resources>

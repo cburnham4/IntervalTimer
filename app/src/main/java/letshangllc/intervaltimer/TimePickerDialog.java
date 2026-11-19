@@ -3,13 +3,13 @@ package letshangllc.intervaltimer;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 
 /**
  * Created by Carl on 6/24/2016.
@@ -21,14 +21,15 @@ public class TimePickerDialog extends DialogFragment {
     private int minutes, seconds;
 
 
-    public void setMinutes(int minutes){
+    public void setMinutes(int minutes) {
         this.minutes = minutes;
     }
-    public void setSeconds(int seconds){
+
+    public void setSeconds(int seconds) {
         this.seconds = seconds;
     }
 
-    public interface Listener{
+    public interface Listener {
         void postitiveClick(int minutes, int seconds);
     }
 
@@ -36,9 +37,10 @@ public class TimePickerDialog extends DialogFragment {
     private Context context;
 
 
-    public void setCallback(Listener listener){
+    public void setCallback(Listener listener) {
         this.listener = listener;
     }
+
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
@@ -57,7 +59,6 @@ public class TimePickerDialog extends DialogFragment {
                 .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // sign in the user ...
                         numberPickerMinute.clearFocus();
                         numberPickerSecond.clearFocus();
 
@@ -76,13 +77,13 @@ public class TimePickerDialog extends DialogFragment {
     }
 
 
-    private void setUpNumberPickers(View view){
-        numberPickerMinute = (NumberPicker) view.findViewById(R.id.nmp_minute);
+    private void setUpNumberPickers(View view) {
+        numberPickerMinute = view.findViewById(R.id.nmp_minute);
         numberPickerMinute.setMaxValue(60);
         numberPickerMinute.setMinValue(0);
         numberPickerMinute.setValue(minutes);
 
-        numberPickerSecond = (NumberPicker) view.findViewById(R.id.nmp_second);
+        numberPickerSecond = view.findViewById(R.id.nmp_second);
         numberPickerSecond.setMaxValue(60);
         numberPickerSecond.setMinValue(0);
         numberPickerSecond.setValue(seconds);

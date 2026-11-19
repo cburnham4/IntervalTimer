@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PRODUCTION AdMob configuration for Interval Timer
+    Publisher ID: pub-8223005482588566
+    AdMob app: "Interval Timer" (letshangllc.intervaltimer)
+    Source: AdMob console export (admob-ids.csv)
+
+    Debug builds override these with Google test IDs via
+    app/src/debug/res/values/ad_config.xml
+
+    Mapping:
+      Banner Main      -> MainActivity      (admob_id_main)
+      Banner Intervals -> IntervalActivity  (admob_id_interval)
+-->
+<resources>
+    <!-- AdMob Application ID -->
+    <string name="admob_app_id">ca-app-pub-8223005482588566~4437072732</string>
+
+    <!-- MainActivity banner ("Banner Main") -->
+    <string name="admob_id_main">ca-app-pub-8223005482588566/5913805937</string>
+
+    <!-- IntervalActivity banner ("Banner Intervals") -->
+    <string name="admob_id_interval">ca-app-pub-8223005482588566/7390539138</string>
+</resources>
