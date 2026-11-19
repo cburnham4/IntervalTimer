@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PRODUCTION AdMob configuration for Interval Timer
+    Publisher ID: pub-8223005482588566
+
+    Debug builds override these with Google test IDs via
+    app/src/debug/res/values/ad_config.xml
+
+    Unit IDs below were recovered from the legacy app-release.apk in this repo.
+    The AdMob Application ID (~) was not present in that APK (pre-APPLICATION_ID era).
+-->
+<resources>
+    <!--
+        TODO(release): Replace with the Interval Timer AdMob App ID from AdMob console
+        (same publisher ca-app-pub-8223005482588566). Debug builds use Google's test App ID.
+        Until replaced, release builds must not be shipped with this placeholder.
+    -->
+    <string name="admob_app_id">ca-app-pub-8223005482588566~0000000000</string>
+
+    <!-- MainActivity banner (from legacy APK) -->
+    <string name="admob_id_main">ca-app-pub-8223005482588566/5913805937</string>
+
+    <!-- IntervalActivity banner (from legacy APK) -->
+    <string name="admob_id_interval">ca-app-pub-8223005482588566/7390539138</string>
+</resources>
